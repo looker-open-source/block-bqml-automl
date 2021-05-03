@@ -92,6 +92,7 @@ view: +input_data {
   }
 
   dimension: mta_tax {
+    label: "MTA Tax"
     type: number
     sql: ${TABLE}.mta_tax ;;
   }
