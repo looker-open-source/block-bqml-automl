@@ -13,6 +13,7 @@ view: automl_create_model {
                     {% endif %}
                     , INPUT_LABEL_COLS = ['{% parameter automl_training_data.select_target %}']
                     , BUDGET_HOURS = {% parameter set_budget_hours %}
+                  )
 
                   AS (SELECT *
                       FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data)
