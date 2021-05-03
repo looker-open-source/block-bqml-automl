@@ -1,5 +1,5 @@
 view: model_info {
-  sql_table_name: @{looker_temp_dataset_name}.BQML_K_MEANS_MODEL_INFO ;;
+  sql_table_name: @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO ;;
 
   dimension: model_name {
     suggest_persist_for: "0 minutes"
@@ -8,19 +8,19 @@ view: model_info {
     sql: ${TABLE}.model_name ;;
   }
 
-  dimension: number_of_clusters {
+  dimension: target {
     type: string
-    sql: ${TABLE}.number_of_clusters ;;
-  }
-
-  dimension: item_id {
-    type: string
-    sql: ${TABLE}.item_id ;;
+    sql: ${TABLE}.target ;;
   }
 
   dimension: features {
     type: string
     sql: ${TABLE}.features ;;
+  }
+
+  dimension: budget_hours {
+    type: number
+    sql: ${TABLE}.budget_hours ;;
   }
 
   dimension_group: created_at {

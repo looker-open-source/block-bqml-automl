@@ -1,6 +1,6 @@
 ## About this LookML Block
 
-Use this block to design user-friendly Looker Explores that allow business users to build and evaluate BQML K-means Clustering models from the Looker UI.
+Use this block to design user-friendly Looker Explores that allow business users to build and evaluate regression and classification machine learning models from the Looker UI.
 
 
 ## Implementation
@@ -16,9 +16,12 @@ Use this block to design user-friendly Looker Explores that allow business users
 
 ## Resources
 
-[BigQuery ML Tutorial: Creating a k-means clustering model]
-(https://cloud.google.com/bigquery-ml/docs/kmeans-tutorial)
+[AutoML Tables Docs: Beginner's Guide]
+(https://cloud.google.com/automl-tables/docs/beginners-guide)
+
+[BigQuery ML Docs: The CREATE MODEL statement for training AutoML Tables models]
+(https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-automl#create_model_statement_for_automl_tables_models)
 
 
 
-##### Author: Chris Schmidt, Jennifer Thomas
+##### Author: Chris Schmidt
