@@ -36,8 +36,7 @@ view: automl_create_model {
                       CURRENT_TIMESTAMP AS created_at) AS S
                 ON T.model_name = S.model_name
                 WHEN MATCHED THEN
-                  UPDATE SET
-                      , target=S.target
+                  UPDATE SET target=S.target
                       , features=S.features
                       , budget_hours=S.budget_hours
                       , created_at=S.created_at
