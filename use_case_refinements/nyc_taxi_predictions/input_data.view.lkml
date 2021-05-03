@@ -2,7 +2,22 @@ include: "/views/input_data.view"
 
 view: +input_data {
   derived_table: {
-    sql:  SELECT ROW_NUMBER() OVER() as pk, * FROM `nyc-tlc.yellow.trips` ;;
+    sql:  SELECT ROW_NUMBER() OVER() as pk, *
+          FROM `nyc-tlc.yellow.trips`
+          WHERE ABS(MOD(FARM_FINGERPRINT(CAST(pickup_datetime AS STRING)), 100000)) = 1
+          AND
+            trip_distance > 0
+            AND fare_amount >= 2.5 AND fare_amount <= 100.0
+            AND pickup_longitude > -78
+            AND pickup_longitude < -70
+            AND dropoff_longitude > -78
+            AND dropoff_longitude < -70
+            AND pickup_latitude > 37
+            AND pickup_latitude < 45
+            AND dropoff_latitude > 37
+            AND dropoff_latitude < 45
+            AND passenger_count > 0
+    ;;
   }
 
   dimension: pk {
