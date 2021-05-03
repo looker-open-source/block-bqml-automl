@@ -11,7 +11,7 @@ view: automl_create_model {
                     {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
                       MODEL_TYPE = 'AUTOML_CLASSIFIER'
                     {% endif %}
-                    , INPUT_LABEL_COLS = ['{% parameter automl_training_data.select_target %}']
+                    , INPUT_LABEL_COLS = ['input_label_col']
                     , BUDGET_HOURS = {% parameter set_budget_hours %}
                   )
 

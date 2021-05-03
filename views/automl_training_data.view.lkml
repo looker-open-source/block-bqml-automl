@@ -6,7 +6,7 @@ view: automl_training_data {
     persist_for: "1 second"
     sql_create: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data
                   AS  SELECT
-                        {% parameter select_target %} AS target_col,
+                        {% parameter select_target %} AS input_label_col,
                         {% assign features = _filters['select_features'] | sql_quote | remove: '"' | remove: "'" %}
                           {{ features }}
                       FROM ${input_data.SQL_TABLE_NAME}

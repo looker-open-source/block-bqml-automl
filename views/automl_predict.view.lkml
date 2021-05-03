@@ -9,16 +9,22 @@ view: automl_predict {
     ;;
   }
 
-  parameter: select_target {
-    label: "Select Target (REQUIRED)"
-    description: "Select your model's target field"
-    type: unquoted
-    suggest_explore: field_suggestions
-    suggest_dimension: field_suggestions.column_name
+  # parameter: select_target {
+  #   label: "Select Target (REQUIRED)"
+  #   description: "Select your model's target field"
+  #   type: unquoted
+  #   suggest_explore: field_suggestions
+  #   suggest_dimension: field_suggestions.column_name
+  # }
+
+  dimension: pk {
+    primary_key: yes
+    hidden: yes
+    type: number
   }
 
   dimension: predicted_target {
     type: string
-    sql: ${TABLE}.predicted_{% parameter select_target %} ;;
+    sql: ${TABLE}.predicted_input_label_col ;;
   }
 }
