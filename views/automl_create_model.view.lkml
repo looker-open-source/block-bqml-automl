@@ -32,7 +32,7 @@ view: automl_create_model {
                       '{% parameter automl_training_data.select_target %}' AS target,
                       {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                         '{{ features }}' AS features,
-                      '{% parameter set_budget_hours %}' AS budget_hours,
+                      {% parameter set_budget_hours %} AS budget_hours,
                       CURRENT_TIMESTAMP AS created_at) AS S
                 ON T.model_name = S.model_name
                 WHEN MATCHED THEN
@@ -52,7 +52,7 @@ view: automl_create_model {
     label: "Set Budget Hours (optional)"
     description: "Sets the training budget for AutoML Tables training, specified in hours. Defaults to 1.0 and must be between 1.0 and 72.0."
     type: number
-    default_value: "1"
+    default_value: "1.0"
   }
 
   dimension: train_model {
