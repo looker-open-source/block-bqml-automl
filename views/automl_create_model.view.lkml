@@ -23,7 +23,7 @@ view: automl_create_model {
                 (model_name STRING,
                 target STRING,
                 features STRING,
-                budget_hours INT64,
+                budget_hours FLOAT64,
                 created_at TIMESTAMP)
     ;;
 
