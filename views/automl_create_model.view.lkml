@@ -14,7 +14,6 @@ view: automl_create_model {
                     , INPUT_LABEL_COLS = ['input_label_col']
                     , BUDGET_HOURS = {% parameter set_budget_hours %}
                   )
-
                   AS (SELECT *
                       FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data)
       ;;
@@ -57,8 +56,8 @@ view: automl_create_model {
 
   dimension: train_model {
     view_label: "[5] AutoML: Create Model"
-    label: "Train Model (REQUIRED)"
-    description: "Select this field and SCHEDULE the query to yourself to start training your model. Your query will timeout if you click Run in the Explore UI."
+    label: "Train Model (REQUIRED - Do Not Run. Schedule Only)"
+    description: "Select this field and SCHEDULE the query to yourself to start training your model. Do not attempt to click the Run button with this field selected. Your query will timeout before the AutoML model is created if you click Run."
     type: string
     sql: 'Complete' ;;
   }
