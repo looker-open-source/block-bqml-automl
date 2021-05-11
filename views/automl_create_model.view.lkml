@@ -44,6 +44,11 @@ view: automl_create_model {
                   INSERT (model_name, target, features, budget_hours, created_at)
                   VALUES(model_name, target, features, budget_hours, created_at)
       ;;
+
+      sql_step:
+
+
+      ;;
     }
   }
 

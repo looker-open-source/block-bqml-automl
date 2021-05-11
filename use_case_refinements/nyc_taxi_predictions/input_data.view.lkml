@@ -2,7 +2,7 @@ include: "/views/input_data.view"
 
 view: +input_data {
   derived_table: {
-    sql:  SELECT ROW_NUMBER() OVER() as pk, *
+    sql:  SELECT GENERATE_UUID() as pk, *
           FROM `nyc-tlc.yellow.trips`
           WHERE ABS(MOD(FARM_FINGERPRINT(CAST(pickup_datetime AS STRING)), 100000)) = 1
           AND

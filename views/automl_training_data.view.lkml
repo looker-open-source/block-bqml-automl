@@ -4,6 +4,14 @@ view: automl_training_data {
   label: "[3] AutoML: Select Training Data"
   derived_table: {
     persist_for: "1 second"
+
+    sql_create: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data
+                  AS  SELECT * EXCEPT({% parameter select_target %})
+                        , {% parameter select_target %} AS input_label_col
+                      FROM ${input_data.SQL_TABLE_NAME}
+    ;;
+
+
     sql_create: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data
                   AS  SELECT
                         {% parameter select_target %} AS input_label_col,
