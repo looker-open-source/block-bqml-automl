@@ -44,11 +44,6 @@ view: automl_create_model {
                   INSERT (model_name, target, features, budget_hours, created_at)
                   VALUES(model_name, target, features, budget_hours, created_at)
       ;;
-
-      sql_step:
-
-
-      ;;
     }
   }
 
@@ -63,7 +58,7 @@ view: automl_create_model {
   dimension: train_model {
     view_label: "[5] AutoML: Create Model"
     label: "Train Model (REQUIRED)"
-    description: "Select this field and schedule the query to start training your model."
+    description: "Select this field and SCHEDULE the query to yourself to start training your model. Your query will timeout if you click Run in the Explore UI."
     type: string
     sql: 'Complete' ;;
   }
