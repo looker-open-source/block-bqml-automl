@@ -1,7 +1,10 @@
 view: automl_predict {
   label: "[7] AutoML: Predictions"
 
-  sql_table_name: @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data ;;
+  sql_table_name: ML.PREDICT(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model,
+                                TABLE @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data
+                              )
+   ;;
 
 
   dimension: predicted_target {
