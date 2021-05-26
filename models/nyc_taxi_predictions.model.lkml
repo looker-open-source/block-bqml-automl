@@ -11,7 +11,7 @@ explore: nyc_taxi_predictions {
 
   join: automl_predict {
     type: full_outer
-    sql_on: ${input_data.pk} = ${automl_predict.pk} ;;
+    sql_on: ${input_data.trip_id} = ${automl_predict.trip_id} ;;
     relationship: one_to_one
   }
 }

@@ -2,7 +2,7 @@ include: "/views/input_data.view"
 
 view: +input_data {
   derived_table: {
-    sql:  SELECT GENERATE_UUID() as pk, *
+    sql:  SELECT CONCAT(pickup_datetime, pickup_latitude, pickup_longitude) as trip_id, *
           FROM `nyc-tlc.yellow.trips`
           WHERE ABS(MOD(FARM_FINGERPRINT(CAST(pickup_datetime AS STRING)), 100000)) = 1
           AND
@@ -20,10 +20,10 @@ view: +input_data {
     ;;
   }
 
-  dimension: pk {
+  dimension: trip_id {
+    label: "Trip ID"
     primary_key: yes
-    hidden: yes
-    type: number
+    type: string
   }
 
   dimension: vendor_id {

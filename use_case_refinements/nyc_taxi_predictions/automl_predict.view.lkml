@@ -2,9 +2,9 @@ include: "/views/automl_predict.view.lkml"
 
 view: +automl_predict {
 
-  dimension: pk {
+  dimension: trip_id {
+    label: "Trip ID"
     primary_key: yes
-    hidden: yes
-    type: number
+    type: string
   }
 }
