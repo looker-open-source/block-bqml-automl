@@ -221,6 +221,7 @@ view: +input_data {
     group_label: "AVERAGES"
     type: average
     sql: ${passenger_count} ;;
+    value_format_name: decimal_2
   }
 
   measure: trip_distance_average {
