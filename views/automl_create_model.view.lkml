@@ -36,7 +36,7 @@ view: automl_create_model {
                         '{{ features }}' AS features,
                       {% parameter set_budget_hours %} AS budget_hours,
                       CURRENT_TIMESTAMP AS created_at,
-                      {{ _explore._name }} AS explore
+                      '{{ _explore._name }}' AS explore
                       ) AS S
                 ON T.model_name = S.model_name
                 WHEN MATCHED THEN
