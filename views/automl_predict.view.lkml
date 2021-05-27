@@ -7,8 +7,17 @@ view: automl_predict {
    ;;
 
 
-  dimension: predicted_target {
-    type: string
+  dimension: numeric_prediction {
+    type: number
     sql: ${TABLE}.predicted_input_label_col ;;
+  }
+
+  dimension: category_prediction {
+    type: string
+    sql:  CASE
+            WHEN REGEXP_CONTAINS(CAST(${TABLE}.predicted_input_label_col AS STRING), r"[A-Za-z]") THEN ${TABLE}.predicted_input_label_col
+            ELSE NULL
+          END
+    ;;
   }
 }
