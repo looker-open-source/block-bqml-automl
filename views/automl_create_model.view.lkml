@@ -35,7 +35,7 @@ view: automl_create_model {
                       {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                         '{{ features }}' AS features,
                       {% parameter set_budget_hours %} AS budget_hours,
-                      CURRENT_TIMESTAMP AS created_at
+                      CURRENT_TIMESTAMP AS created_at,
                       {{ _explore._name }} AS explore
                       ) AS S
                 ON T.model_name = S.model_name
