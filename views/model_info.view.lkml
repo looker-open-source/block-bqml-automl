@@ -13,6 +13,11 @@ view: model_info {
     sql: ${TABLE}.target ;;
   }
 
+  dimension: target_type {
+    type: string
+    sql: ${TABLE}.target_type ;;
+  }
+
   dimension: features {
     type: string
     sql: ${TABLE}.features ;;
@@ -27,6 +32,11 @@ view: model_info {
     type: time
     timeframes: [raw, time]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: explore {
+    type: string
+    sql: ${TABLE}.explore ;;
   }
 
   measure: count {
