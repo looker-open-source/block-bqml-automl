@@ -19,29 +19,36 @@ view: automl_create_model {
       ;;
 
       sql_step: CREATE TABLE IF NOT EXISTS @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO
-                (model_name STRING,
-                target STRING,
-                features STRING,
-                budget_hours FLOAT64,
-                created_at TIMESTAMP)
+                (model_name   STRING,
+                target        STRING,
+                target_type   STRING,
+                features      STRING,
+                budget_hours  FLOAT64,
+                created_at    TIMESTAMP,
+                explore       STRING)
     ;;
 
       sql_step: MERGE @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO AS T
                 USING (SELECT '{% parameter model_name.select_model_name %}' AS model_name,
                       '{% parameter automl_training_data.select_target %}' AS target,
+                      '{% parameter automl_training_data.select_target_type %}' AS target_type,
                       {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                         '{{ features }}' AS features,
                       {% parameter set_budget_hours %} AS budget_hours,
-                      CURRENT_TIMESTAMP AS created_at) AS S
+                      CURRENT_TIMESTAMP AS created_at
+                      {{ _explore._name }} AS explore
+                      ) AS S
                 ON T.model_name = S.model_name
                 WHEN MATCHED THEN
                   UPDATE SET target=S.target
+                      , target_type=S.target_type
                       , features=S.features
                       , budget_hours=S.budget_hours
                       , created_at=S.created_at
+                      , explore=S.explore
                 WHEN NOT MATCHED THEN
-                  INSERT (model_name, target, features, budget_hours, created_at)
-                  VALUES(model_name, target, features, budget_hours, created_at)
+                  INSERT (model_name, target, target_type, features, budget_hours, created_at, explore)
+                  VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
       ;;
     }
   }
