@@ -34,4 +34,9 @@ explore: automl_tables {
     type: cross
     relationship: many_to_many
   }
+
+  join: automl_feature_info {
+    type: cross
+    relationship: many_to_many
+  }
 }
