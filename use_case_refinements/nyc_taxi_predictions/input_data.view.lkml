@@ -84,37 +84,45 @@ view: +input_data {
   dimension: fare_amount {
     type: number
     sql: ${TABLE}.fare_amount ;;
+    value_format_name: usd
   }
 
   dimension: extra {
     type: number
     sql: ${TABLE}.extra ;;
+    value_format_name: usd
   }
 
   dimension: mta_tax {
     label: "MTA Tax"
     type: number
     sql: ${TABLE}.mta_tax ;;
+    value_format_name: usd
   }
 
   dimension: imp_surcharge {
+    label: "Improvement Surcharge"
     type: number
     sql: ${TABLE}.imp_surcharge ;;
+    value_format_name: usd
   }
 
   dimension: tip_amount {
     type: number
     sql: ${TABLE}.tip_amount ;;
+    value_format_name: usd
   }
 
   dimension: tolls_amount {
     type: number
     sql: ${TABLE}.tolls_amount ;;
+    value_format_name: usd
   }
 
   dimension: total_amount {
     type: number
     sql: ${TABLE}.total_amount ;;
+    value_format_name: usd
   }
 
   dimension: store_and_fwd_flag {
@@ -122,7 +130,160 @@ view: +input_data {
     sql: ${TABLE}.store_and_fwd_flag ;;
   }
 
-  measure: count {
+
+  # COUNT MEASURES
+
+  measure: trip_count {
+    label: "COUNT of Trips"
+    group_label: "COUNTS"
     type: count
+  }
+
+
+  # SUM MEASURES
+
+  measure: passenger_count_sum {
+    label: "SUM of Passenger Count"
+    group_label: "SUMS"
+    type: sum
+    sql: ${passenger_count} ;;
+  }
+
+  measure: trip_distance_sum {
+    label: "SUM of Trip Distance"
+    group_label: "SUMS"
+    type: sum
+    sql: ${trip_distance} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: fare_amount_sum {
+    label: "SUM of Fare Amount"
+    group_label: "SUMS"
+    type: sum
+    sql: ${fare_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: extra_sum {
+    label: "SUM of Extra"
+    group_label: "SUMS"
+    type: sum
+    sql: ${extra} ;;
+    value_format_name: usd
+  }
+
+  measure: mta_tax_sum {
+    label: "SUM of MTA Tax"
+    group_label: "SUMS"
+    type: sum
+    sql: ${mta_tax} ;;
+    value_format_name: usd
+  }
+
+  measure: imp_surcharge_sum {
+    label: "SUM of Improvement Surcharge"
+    group_label: "SUMS"
+    type: sum
+    sql: ${imp_surcharge} ;;
+    value_format_name: usd
+  }
+
+  measure: tip_amount_sum {
+    label: "SUM of Tip Amount"
+    group_label: "SUMS"
+    type: sum
+    sql: ${tip_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: tolls_amount_sum {
+    label: "SUM of Tolls Amount"
+    group_label: "SUMS"
+    type: sum
+    sql: ${tolls_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: total_amount_sum {
+    label: "SUM of Total Amount"
+    group_label: "SUMS"
+    type: sum
+    sql: ${total_amount} ;;
+    value_format_name: usd
+  }
+
+
+  # AVERAGE MEASURES
+
+  measure: passenger_count_average {
+    label: "AVG of Passenger Count"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${passenger_count} ;;
+  }
+
+  measure: trip_distance_average {
+    label: "AVG of Trip Distance"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${trip_distance} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: fare_amount_average {
+    label: "AVG of Fare Amount"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${fare_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: extra_average {
+    label: "AVG of Extra"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${extra} ;;
+    value_format_name: usd
+  }
+
+  measure: mta_tax_average {
+    label: "AVG of MTA Tax"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${mta_tax} ;;
+    value_format_name: usd
+  }
+
+  measure: imp_surcharge_average {
+    label: "AVG of Improvement Surcharge"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${imp_surcharge} ;;
+    value_format_name: usd
+  }
+
+  measure: tip_amount_average {
+    label: "AVG of Tip Amount"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${tip_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: tolls_amount_average {
+    label: "AVG of Tolls Amount"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${tolls_amount} ;;
+    value_format_name: usd
+  }
+
+  measure: total_amount_average {
+    label: "AVG of Total Amount"
+    group_label: "AVERAGES"
+    type: average
+    sql: ${total_amount} ;;
+    value_format_name: usd
   }
 }
