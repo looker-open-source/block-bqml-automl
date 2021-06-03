@@ -50,6 +50,39 @@ view: automl_create_model {
                   INSERT (model_name, target, target_type, features, budget_hours, created_at, explore)
                   VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
       ;;
+
+      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate
+                    AS
+                    {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
+                       SELECT mean_absolute_error
+                          , mean_squared_error
+                          , mean_squared_log_error
+                          , median_absolute_error
+                          , r2_score
+                          , explained_variance
+                          , NULL AS precision
+                          , NULL AS recall
+                          , NULL AS accuracy
+                          , NULL AS f1_score
+                          , NULL AS log_loss
+                          , NULL AS roc_auc
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                    {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
+                        SELECT NULL AS mean_absolute_error
+                          , NULL AS mean_squared_error
+                          , NULL AS mean_squared_log_error
+                          , NULL AS median_absolute_error
+                          , NULL AS r2_score
+                          , NULL AS explained_variance
+                          , precision
+                          , recall
+                          , accuracy
+                          , f1_score
+                          , log_loss
+                          , roc_auc
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                    {% endif %}
+      ;;
     }
   }
 
@@ -63,8 +96,8 @@ view: automl_create_model {
 
   dimension: train_model {
     view_label: "[5] AutoML: Create Model"
-    label: "Train Model (REQUIRED - Do NOT Run Query. Send Only)"
-    description: "Select this field and SEND the query to yourself to start training your model. Do not attempt to Run a query in the browser with this field selected. Your query will timeout before the AutoML model is created if you click Run."
+    label: "Train Model (REQUIRED) IMPORTANT: READ DESCRIPTION"
+    description: "Select this field and SEND the query to yourself via Email to start training your model. Do not attempt to Run a query in the browser with this field selected. If you do, your query will timeout before the AutoML model is created."
     type: string
     sql: 'Complete' ;;
   }
