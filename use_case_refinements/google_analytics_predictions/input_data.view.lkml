@@ -48,13 +48,6 @@ view: +input_data {
     sql: ${TABLE}.ga_sessions_first_time_visitor ;;
   }
 
-  dimension: is_repeat_visitor {
-    type: yesno
-    sql: ${ga_sessions_visitnumber} > 1 ;;
-  }
-
-
-
   dimension: ga_sessions_visitnumber {
     type: number
     sql: ${TABLE}.ga_sessions_visitnumber ;;
