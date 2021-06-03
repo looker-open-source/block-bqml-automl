@@ -10,6 +10,11 @@ explore: automl_tables {
     filters: [model_name.select_model_name: ""]
   }
 
+  join: input_data {
+    type: cross
+    relationship: many_to_many
+  }
+
   join: automl_training_data {
     sql:  ;;
     relationship: one_to_one
@@ -21,11 +26,6 @@ explore: automl_tables {
   }
 
   join: automl_evaluate {
-    type: cross
-    relationship: many_to_many
-  }
-
-  join: input_data {
     type: cross
     relationship: many_to_many
   }

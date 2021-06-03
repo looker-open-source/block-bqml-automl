@@ -50,6 +50,39 @@ view: automl_create_model {
                   INSERT (model_name, target, target_type, features, budget_hours, created_at, explore)
                   VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
       ;;
+
+      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate
+                    AS
+                    {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
+                       SELECT mean_absolute_error
+                          , mean_squared_error
+                          , mean_squared_log_error
+                          , median_absolute_error
+                          , r2_score
+                          , explained_variance
+                          , NULL AS precision
+                          , NULL AS recall
+                          , NULL AS accuracy
+                          , NULL AS f1_score
+                          , NULL AS log_loss
+                          , NULL AS roc_auc
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                    {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
+                        SELECT NULL AS mean_absolute_error
+                          , NULL AS mean_squared_error
+                          , NULL AS mean_squared_log_error
+                          , NULL AS median_absolute_error
+                          , NULL AS r2_score
+                          , NULL AS explained_variance
+                          , precision
+                          , recall
+                          , accuracy
+                          , f1_score
+                          , log_loss
+                          , roc_auc
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                    {% endif %}
+      ;;
     }
   }
 
