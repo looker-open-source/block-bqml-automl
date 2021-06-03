@@ -7,31 +7,37 @@ view: automl_evaluate {
   # AUTOML_REGRESSOR DIMENSIONS
 
   dimension: mean_absolute_error {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.mean_absolute_error ;;
   }
 
   dimension: mean_squared_error {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.mean_squared_error ;;
   }
 
   dimension: mean_squared_log_error {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.mean_squared_log_error ;;
   }
 
   dimension: median_absolute_error {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.median_absolute_error ;;
   }
 
   dimension: r2_score {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.r2_score ;;
   }
 
   dimension: explained_variance {
+    group_label: "Metrics for Models with Numerical Targets"
     type: number
     sql: ${TABLE}.explained_variance ;;
   }
@@ -40,31 +46,37 @@ view: automl_evaluate {
   # AUTOML_CLASSIFIER DIMENSIONS
 
   dimension: precision {
+    group_label: "Metrics for Models with Categorical Targets"
     type: number
     sql: ${TABLE}.precision ;;
   }
 
   dimension: recall {
+    group_label: "Metrics for Models with Categorical Targets"
     type: number
     sql: ${TABLE}.recall ;;
   }
 
   dimension: accuracy {
+    group_label: "Metrics for Models with Categorical Targets"
     type: number
     sql: ${TABLE}.accuracy ;;
   }
 
   dimension: f1_score {
+    group_label: "Metrics for Models with Categorical Targets"
     type: number
     sql: ${TABLE}.f1_score ;;
   }
 
   dimension: log_loss {
+    group_label: "Metrics for Models with Categorical Targets"
     type: number
     sql: ${TABLE}.log_loss ;;
   }
 
   dimension: roc_auc {
+    group_label: "Metrics for Models with Categorical Targets"
     label: "ROC AUC"
     type: number
     sql: ${TABLE}.roc_auc ;;

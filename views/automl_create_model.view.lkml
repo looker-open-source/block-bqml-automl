@@ -96,8 +96,8 @@ view: automl_create_model {
 
   dimension: train_model {
     view_label: "[5] AutoML: Create Model"
-    label: "Train Model (REQUIRED - Do NOT Run Query. Send Only)"
-    description: "Select this field and SEND the query to yourself to start training your model. Do not attempt to Run a query in the browser with this field selected. Your query will timeout before the AutoML model is created if you click Run."
+    label: "Train Model (REQUIRED) IMPORTANT: READ DESCRIPTION"
+    description: "Select this field and SEND the query to yourself via Email to start training your model. Do not attempt to Run a query in the browser with this field selected. If you do, your query will timeout before the AutoML model is created."
     type: string
     sql: 'Complete' ;;
   }
