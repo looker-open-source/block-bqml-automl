@@ -5,7 +5,7 @@ include: "/use_case_refinements/google_analytics_predictions/*"
 
 explore: google_analytics_predictions {
   label: "AutoML Tables: Google Analytics Predictions"
-  description: "Use this Explore to create regression and classification models for advanced analytics using public GA data"
+  description: "Use this Explore to create regression and classification models for advanced analytics using Google Analytics data"
 
   extends: [automl_tables]
 
