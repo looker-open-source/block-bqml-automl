@@ -22,4 +22,23 @@ view: automl_predict {
           END
     ;;
   }
+
+  measure: prediction_count {
+    label: "Count of Predictions"
+    type: count
+  }
+
+  measure: average_prediction {
+    group_label: "Measure for Numeric Predictions"
+    type: average
+    sql: ${numeric_prediction} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: total_prediction {
+    group_label: "Measure for Numeric Predictions"
+    type: sum
+    sql: ${numeric_prediction} ;;
+    value_format_name: decimal_4
+  }
 }
