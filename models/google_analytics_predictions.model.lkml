@@ -11,7 +11,7 @@ explore: google_analytics_predictions {
 
   join: automl_predict {
     type: full_outer
-    sql_on: ${input_data.ga_sessions_id} = ${automl_predict.ga_sessions_id} ;;
+    sql_on: ${input_data.session_id} = ${automl_predict.session_id} ;;
     relationship: one_to_one
   }
 }
