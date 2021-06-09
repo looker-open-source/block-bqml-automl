@@ -12,17 +12,17 @@ explore: automl_tables {
 
   join: input_data {
     type: cross
-    relationship: many_to_many
+    relationship: one_to_many
   }
 
   join: automl_training_data {
     sql:  ;;
-    relationship: one_to_one
+    relationship: many_to_one
   }
 
   join: automl_create_model {
     sql:  ;;
-    relationship: one_to_one
+    relationship: many_to_one
   }
 
   join: automl_evaluate {
