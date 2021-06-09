@@ -4,7 +4,7 @@ view: automl_create_model {
 
     create_process: {
 
-      sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model
+      sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }}
                   OPTIONS(
                     {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
                       MODEL_TYPE = 'AUTOML_REGRESSOR'
@@ -66,7 +66,7 @@ view: automl_create_model {
                           , NULL AS f1_score
                           , NULL AS log_loss
                           , NULL AS roc_auc
-                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }})
                     {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
                         SELECT NULL AS mean_absolute_error
                           , NULL AS mean_squared_error
@@ -80,7 +80,7 @@ view: automl_create_model {
                           , f1_score
                           , log_loss
                           , roc_auc
-                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model)
+                        FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }})
                     {% endif %}
       ;;
     }
