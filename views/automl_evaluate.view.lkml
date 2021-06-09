@@ -1,7 +1,7 @@
 view: automl_evaluate {
   label: "[6] AutoML: Evaluation Metrics"
 
-  sql_table_name: @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate ;;
+  sql_table_name: @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate_{{ _explore._name }} ;;
 
 
   # AUTOML_REGRESSOR DIMENSIONS

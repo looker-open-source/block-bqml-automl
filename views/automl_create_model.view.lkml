@@ -15,7 +15,7 @@ view: automl_create_model {
                     , BUDGET_HOURS = {% parameter set_budget_hours %}
                   )
                   AS (SELECT *
-                      FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data)
+                      FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }})
       ;;
 
       sql_step: CREATE TABLE IF NOT EXISTS @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO
@@ -51,7 +51,7 @@ view: automl_create_model {
                   VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
       ;;
 
-      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate
+      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate_{{ _explore._name }}
                     AS
                     {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
                        SELECT mean_absolute_error
