@@ -5,6 +5,7 @@ explore: automl_tables {
   view_name: model_name
   group_label: "Advanced Analytics with BQML"
   description: "Use this Explore to create regression and classification models for advanced analytics using NYC taxi data"
+  persist_for: "0 minutes"
 
   always_filter: {
     filters: [model_name.select_model_name: ""]
