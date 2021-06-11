@@ -38,7 +38,7 @@ view: automl_create_model {
                       CURRENT_TIMESTAMP AS created_at,
                       '{{ _explore._name }}' AS explore
                       ) AS S
-                ON T.model_name = S.model_name
+                ON T.model_name = S.model_name AND T.explore = S.explore
                 WHEN MATCHED THEN
                   UPDATE SET target=S.target
                       , target_type=S.target_type
