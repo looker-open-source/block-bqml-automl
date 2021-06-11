@@ -2,15 +2,31 @@ include: "/views/input_data.view"
 
 view: +input_data {
   derived_table: {
-    sql:  SELECT ROW_NUMBER() OVER() AS row_number, *
+    sql:  SELECT CAST(CONCAT(age
+            , workclass
+            , functional_weight
+            , education
+            , education_num
+            , marital_status
+            , occupation
+            , relationship
+            , race
+            , sex
+            , capital_gain
+            , capital_loss
+            , hours_per_week
+            , native_country
+            , income_bracket
+            , RAND()
+            ) AS BYTES) AS id, *
           FROM `bigquery-public-data.ml_datasets.census_adult_income`
     ;;
   }
 
-  dimension: row_number {
+  dimension: id {
     primary_key: yes
     type: number
-    sql: ${TABLE}.row_number ;;
+    sql: ${TABLE}.id ;;
   }
 
   dimension: age {
@@ -95,7 +111,7 @@ view: +input_data {
 
   set: detail {
     fields: [
-      row_number,
+      id,
       age,
       workclass,
       functional_weight,

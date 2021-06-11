@@ -2,7 +2,7 @@ include: "/views/automl_predict.view.lkml"
 
 view: +automl_predict {
 
-  dimension: row_number {
+  dimension: id {
     primary_key: yes
     type: number
   }
