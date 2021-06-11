@@ -1,8 +1,23 @@
 view: automl_create_model {
+  label: "[5] AutoML: Create Model"
   derived_table: {
     persist_for: "1 second"
 
     create_process: {
+
+      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data_{{ _explore._name }}
+                    AS  SELECT * EXCEPT({% parameter automl_training_data.select_target %})
+                          , {% parameter automl_training_data.select_target %} AS input_label_col
+                        FROM ${input_data.SQL_TABLE_NAME}
+      ;;
+
+      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }}
+                    AS  SELECT
+                          {% parameter automl_training_data.select_target %} AS input_label_col,
+                          {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
+                            {{ features }}
+                        FROM ${input_data.SQL_TABLE_NAME}
+      ;;
 
       sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }}
                   OPTIONS(
@@ -12,20 +27,20 @@ view: automl_create_model {
                       MODEL_TYPE = 'AUTOML_CLASSIFIER'
                     {% endif %}
                     , INPUT_LABEL_COLS = ['input_label_col']
-                    , BUDGET_HOURS = {% parameter set_budget_hours %}
+                    , BUDGET_HOURS = {% parameter automl_hyper_params.set_budget_hours %}
                   )
                   AS (SELECT *
                       FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }})
       ;;
 
       sql_step: CREATE TABLE IF NOT EXISTS @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO
-                (model_name   STRING,
-                target        STRING,
-                target_type   STRING,
-                features      STRING,
-                budget_hours  FLOAT64,
-                created_at    TIMESTAMP,
-                explore       STRING)
+                  (model_name   STRING,
+                  target        STRING,
+                  target_type   STRING,
+                  features      STRING,
+                  budget_hours  FLOAT64,
+                  created_at    TIMESTAMP,
+                  explore       STRING)
     ;;
 
       sql_step: MERGE @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO AS T
@@ -34,7 +49,7 @@ view: automl_create_model {
                       '{% parameter automl_training_data.select_target_type %}' AS target_type,
                       {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                         '{{ features }}' AS features,
-                      {% parameter set_budget_hours %} AS budget_hours,
+                      {% parameter automl_hyper_params.set_budget_hours %} AS budget_hours,
                       CURRENT_TIMESTAMP AS created_at,
                       '{{ _explore._name }}' AS explore
                       ) AS S
@@ -86,16 +101,7 @@ view: automl_create_model {
     }
   }
 
-  parameter: set_budget_hours {
-    view_label: "[4] AutoML: Set Model Parameters"
-    label: "Set Budget Hours (optional)"
-    description: "Sets the training budget for AutoML Tables training, specified in hours. Defaults to 1.0 and must be between 1.0 and 72.0."
-    type: number
-    default_value: "1.0"
-  }
-
   dimension: train_model {
-    view_label: "[5] AutoML: Create Model"
     label: "Train Model (REQUIRED) IMPORTANT: READ DESCRIPTION"
     description: "Select this field and SEND the query to yourself via Email to start training your model. Do not attempt to Run a query in the browser with this field selected. If you do, your query will timeout before the AutoML model is created."
     type: string

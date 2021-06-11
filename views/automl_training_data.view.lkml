@@ -2,27 +2,6 @@ include: "/explores/field_suggestions.explore"
 
 view: automl_training_data {
   label: "[3] AutoML: Select Training Data"
-  derived_table: {
-    persist_for: "1 second"
-
-    create_process: {
-
-      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data_{{ _explore._name }}
-                    AS  SELECT * EXCEPT({% parameter select_target %})
-                          , {% parameter select_target %} AS input_label_col
-                        FROM ${input_data.SQL_TABLE_NAME}
-      ;;
-
-
-      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }}
-                    AS  SELECT
-                          {% parameter select_target %} AS input_label_col,
-                          {% assign features = _filters['select_features'] | sql_quote | remove: '"' | remove: "'" %}
-                            {{ features }}
-                        FROM ${input_data.SQL_TABLE_NAME}
-      ;;
-    }
-  }
 
   parameter: select_target {
     label: "Select Target (REQUIRED)"

@@ -20,6 +20,11 @@ explore: automl_tables {
     relationship: many_to_one
   }
 
+  join: automl_hyper_params {
+    sql:  ;;
+    relationship: many_to_one
+  }
+
   join: automl_create_model {
     sql:  ;;
     relationship: many_to_one
