@@ -60,7 +60,6 @@ view: automl_create_model {
                       , features=S.features
                       , budget_hours=S.budget_hours
                       , created_at=S.created_at
-                      , explore=S.explore
                 WHEN NOT MATCHED THEN
                   INSERT (model_name, target, target_type, features, budget_hours, created_at, explore)
                   VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
