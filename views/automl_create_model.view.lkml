@@ -17,6 +17,7 @@ view: automl_create_model {
                           {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                             {{ features }}
                         FROM ${input_data.SQL_TABLE_NAME}
+                        WHERE {% parameter automl_training_data.select_target %} IS NOT NULL
       ;;
 
       sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }}
