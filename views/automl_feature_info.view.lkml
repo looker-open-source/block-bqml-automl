@@ -21,6 +21,7 @@ view: automl_feature_info {
   dimension: mean {
     type: number
     sql: ${TABLE}.mean ;;
+    value_format_name: decimal_4
   }
 
   dimension: median {
@@ -31,6 +32,7 @@ view: automl_feature_info {
   dimension: stddev {
     type: number
     sql: ${TABLE}.stddev ;;
+    value_format_name: decimal_4
   }
 
   dimension: category_count {
