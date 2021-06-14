@@ -17,7 +17,6 @@ view: +input_data {
             , hours_per_week
             , native_country
             , income_bracket
-            , RAND()
             ) AS BYTES) AS id, *
           FROM `bigquery-public-data.ml_datasets.census_adult_income`
     ;;
@@ -25,7 +24,7 @@ view: +input_data {
 
   dimension: id {
     primary_key: yes
-    type: number
+    type: string
     sql: ${TABLE}.id ;;
   }
 

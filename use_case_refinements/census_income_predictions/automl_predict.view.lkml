@@ -4,6 +4,6 @@ view: +automl_predict {
 
   dimension: id {
     primary_key: yes
-    type: number
+    type: string
   }
 }
