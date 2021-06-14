@@ -3,22 +3,41 @@ include: "/views/input_data.view"
 view: +input_data {
   derived_table: {
     sql:  SELECT CAST(CONCAT(age
-            , workclass
-            , functional_weight
-            , education
-            , education_num
-            , marital_status
-            , occupation
-            , relationship
-            , race
-            , sex
-            , capital_gain
-            , capital_loss
-            , hours_per_week
-            , native_country
-            , income_bracket
-            ) AS BYTES) AS id, *
-          FROM `bigquery-public-data.ml_datasets.census_adult_income`
+                      , workclass
+                      , functional_weight
+                      , education
+                      , education_num
+                      , marital_status
+                      , occupation
+                      , relationship
+                      , race
+                      , sex
+                      , capital_gain
+                      , capital_loss
+                      , hours_per_week
+                      , native_country
+                      , income_bracket
+                      ) AS BYTES) AS id, * EXCEPT(row_count)
+          FROM (SELECT age
+                    , workclass
+                    , functional_weight
+                    , education
+                    , education_num
+                    , marital_status
+                    , occupation
+                    , relationship
+                    , race
+                    , sex
+                    , capital_gain
+                    , capital_loss
+                    , hours_per_week
+                    , native_country
+                    , income_bracket
+                    , COUNT(*) as row_count
+                FROM `bigquery-public-data.ml_datasets.census_adult_income`
+                GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+                HAVING row_count = 1
+                )
     ;;
   }
 
