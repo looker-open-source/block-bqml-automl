@@ -17,15 +17,15 @@
   },
   "models": [
     {
-      "name": "bqml_k_means",
+      "name": "automl_tables",
       "connection_constant": "CONNECTION_NAME"
     },
     {
-      "name": "ecommerce_customer_segmentation",
+      "name": "census_income_predictions",
       "connection_constant": "CONNECTION_NAME"
     },
      {
-      "name": "nyc_taxi_trip_segmentation",
+      "name": "nyc_taxi_predictions",
       "connection_constant": "CONNECTION_NAME"
     }
   ]
