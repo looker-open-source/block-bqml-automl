@@ -1,6 +1,6 @@
 project_name: "automl_tables_block"
 
-constant: database_connection {
+constant: CONNECTION_NAME {
   value: "advanced_analytics_accelerator"
 }
 
