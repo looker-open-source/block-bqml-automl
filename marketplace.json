@@ -1,0 +1,32 @@
+{
+  "label": "BigQuery ML Classification and Regression (AutoML Tables)",
+  "category_label": "Models",
+  "branding": {
+    "image_uri": "https://marketplace-api.looker.com/block-icons/bq_new_icon.png",
+    "tagline": "Build Explores that allow business users to create state-of-the-art classification and regression machine learning models for categorical or numerical predictions."
+  },
+
+  "constants": {
+    "CONNECTION_NAME": {
+      "label": "Connection Name",
+      "value_constraint": "connection"
+    },
+    "looker_temp_dataset_name": {
+      "label": "Looker Temp Dataset Name"
+    }
+  },
+  "models": [
+    {
+      "name": "bqml_k_means",
+      "connection_constant": "CONNECTION_NAME"
+    },
+    {
+      "name": "ecommerce_customer_segmentation",
+      "connection_constant": "CONNECTION_NAME"
+    },
+     {
+      "name": "nyc_taxi_trip_segmentation",
+      "connection_constant": "CONNECTION_NAME"
+    }
+  ]
+}
