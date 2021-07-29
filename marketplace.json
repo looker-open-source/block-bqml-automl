@@ -17,10 +17,6 @@
     }
   },
   "models": [
-
-    }
-  },
-  "models": [
     {
       "name": "automl_tables_model_info",
       "connection_constant": "CONNECTION_NAME"
