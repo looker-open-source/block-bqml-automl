@@ -38,7 +38,7 @@ This Block requires a BigQuery database connection with the following:
 2. Create an IDE folder to save refinements for each new use case
 3. Create refinements of the following LookML files in the use case's IDE folder:
   - (REQUIRED) `input_data.view` - Include the sql definition for the input dataset. The dataset should include data to be used for training as well as records that will be used to make predictions
-  - (REQUIRED) `automl_predict.view` - Replace the value of the *sql* parameter for the `input_data_primary_key` dimension with the primary key column from `input_data.view`
+  - (REQUIRED) `automl_predict.view` - Update the values of the *label:* and *sql:* subparameters for the `input_data_primary_key` dimension with the primary key column from `input_data.view`
   - (REQUIRED) `model_name_suggestions.explore` - Add a *sql_always_where* clause to specify the `${model_info.explore} = explore_name`. This will prevent suggestions of ML models names created with other Explores
 4. Create a new LookML model for each use case (See [Example](https://github.com/looker/block-bqml-automl/blob/master/models/census_income_predictions.model.lkml))
   - Add include statements to include `automl_tables.explore` file and all refinement files in your use case IDE folder

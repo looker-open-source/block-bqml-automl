@@ -11,7 +11,7 @@ view: automl_predict {
 
   dimension: input_data_primary_key {
     primary_key: yes
-    hidden: yes
+    label: "ID"
     type: string
     sql: ${TABLE}.id ;;
   }
