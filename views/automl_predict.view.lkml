@@ -40,14 +40,14 @@ view: automl_predict {
   }
 
   measure: average_prediction {
-    group_label: "Measure for Numeric Predictions"
+    group_label: "Measures for Numeric Predictions"
     type: average
     sql: ${numeric_prediction} ;;
     value_format_name: decimal_4
   }
 
   measure: total_prediction {
-    group_label: "Measure for Numeric Predictions"
+    group_label: "Measures for Numeric Predictions"
     type: sum
     sql: ${numeric_prediction} ;;
     value_format_name: decimal_4
