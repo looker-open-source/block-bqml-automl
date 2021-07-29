@@ -1,7 +1,6 @@
-connection: "@{database_connection}"
+connection: "@{CONNECTION_NAME}"
 
 include: "/explores/automl_tables.explore"
-include: "/use_case_refinements/census_income_predictions/*"
 
 explore: census_income_predictions {
   label: "AutoML Tables: Census Income Predictions"
@@ -11,7 +10,7 @@ explore: census_income_predictions {
 
   join: automl_predict {
     type: full_outer
-    sql_on: ${input_data.id} = ${automl_predict.id} ;;
+    sql_on: ${input_data.id} = ${automl_predict.input_data_primary_key} ;;
     relationship: one_to_one
   }
 }

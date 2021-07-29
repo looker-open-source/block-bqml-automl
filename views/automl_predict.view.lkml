@@ -7,6 +7,17 @@ view: automl_predict {
    ;;
 
 
+######################### UPDATE WITH PRIMARY KEY COLUMN FROM INPUT DATA #############################
+
+  dimension: input_data_primary_key {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: ${TABLE}.id ;;
+  }
+
+##########################################################################################################
+
   dimension: numeric_prediction {
     description: "Will be NULL for non-numeric categorical predictions. Use the Category Predictions field instead."
     type: number
