@@ -13,10 +13,12 @@ To integrate Looker with BigQuery ML and AutoML Tables start with your problem: 
 | multi-class classification model | one class from three or more discrete classes | categorize things like segmenting defect types in a manufacturing process |
 | regression model | continuous value | customer spend or future return rates |
 
-This Block gives business users the ability to make predictions (categorical or numerical) from a new or existing Explore. Explores created with this Block can be used to create multiple classification and regression models, evaluate them, and access their predictions in dashboards or custom analyses.
+This Block gives business users the ability to make predictions (categorical or numerical) from a new or existing Explore. Explores created with this Block can be used to create classification and regression models, evaluate them, and access their predictions in dashboards or custom analyses.
+
+Models created AutoML Tables can take hours to run; therefore, users should set up the required parameters for defining the model (name, target, features, etc...) and then use SEND (rather than RUN) to create the model asynchronously. When model is complete, user will receive an email and can return to the explore to review the results.
 
 ---
-> <b><font size = "3" color="#174EA6"> <i class='fa fa-info-circle'></i>  Reach out to your Looker account team if you would like to partner with Looker Professional Services to implement this Looker + BQML block</font></b>
+> <b><font size = "3" color="#174EA6"> <i class='fa fa-info-circle'></i>  Reach out to your Looker account team if you would like to partner with Looker Professional Services to implement this Looker + BQML block or customize for your specific use case</font></b>
 
 ---
 
@@ -80,7 +82,7 @@ At a high-level the steps for each use case are:
 ><b>1)  Create Folder for all Use Case files<br>
 >2)  Add New Model <br>
 >3)  Add New Explore which Extends the Block's AutoML Explore <br>
->4)  Make Refinements of select Explores and Views from the Block <br></b>
+>4)  Make Refinements of select Explores and Views <br></b>
 
 Details and code examples for each step are provided next. Note, all steps take place in `marketplace_bqml-automl` project while in **development mode**.
 
@@ -116,7 +118,7 @@ As noted earlier, all the files related to this Block are found in the `imported
 | steps | example                |
 | -- | -- |
 | Open the Use Case Model file | ga_repeat_visitor.model |
-| Add Explore LookML which <br> a. includes label, group_label and/or description relevant to your use case<br>b. extends the automl_tables explore<br>c. updates the join parameter between `automl_predict` and `input_data` to reflect correct unit<br> <br>The AutoML model output generates a forecast for the target variable modeled and is named __input_data_primary_key__. <br>The target variable modeled could vary by use case (e.g., visitor, customer, machine), so need to update the Explore to capture the correct unit defined in the use case's `input_data` file (note steps for generating this file are detailed in the next section).<br><br>In the example, edit the terms in <b><font color='orange'>bold</font></b> to fit your use case.<br> <br>Note, you may receive a warning that the field you entered in the JOIN for input_data does note exist. This warning can be ignored for now as the input_data.view will be created in the next step.|explore: <font color='orange'><b>ga_repeat_visitor</b></font> {<br>  label: <font color='orange'><b>"AutoML: Google Analytics Repeat Visitor"</b></font><br>  description: <font color='orange'><b>"Use this Explore to create Classification or Regression models to make categorical or numerical predictions for Google Analytics data"</b></font><br><br>  extends: [automl_tables] <br><br>   join: automl_predict {<br>    type:full_outer<br>    relationship: one_to_one<br>    sql_on: <font color = 'orange'><b>${input_data.ga_session_id}</b></font> = ${automl_predict.input_data_primary_key} ;;<br>  }<br>} |
+| Add Explore LookML which <br> a. includes label, group_label and/or description relevant to your use case<br>b. extends the automl_tables explore<br>c. updates the join parameter between `automl_predict` and `input_data` to reflect correct unit<br> <br>The AutoML model output generates a forecast for the target variable modeled and is named __input_data_primary_key__. <br>The target variable modeled could vary by use case (e.g., visitor, customer, machine), so need to update the Explore to capture the correct unit defined in the use case's `input_data` file (note steps for generating this file are detailed in the next section).<br><br>In the example, edit the terms in <b><font color='orange'>bold</font></b> to fit your use case.<br> <br>Note, you may receive a warning that the field you entered in the JOIN for input_data does not exist. This warning can be ignored for now as the input_data.view will be created in the next step.|explore: <font color='orange'><b>ga_repeat_visitor</b></font> {<br>  label: <font color='orange'><b>"AutoML: Google Analytics Repeat Visitor"</b></font><br>  description: <font color='orange'><b>"Use this Explore to create Classification or Regression models to make categorical or numerical predictions for Google Analytics data"</b></font><br><br>  extends: [automl_tables] <br><br>   join: automl_predict {<br>    type:full_outer<br>    relationship: one_to_one<br>    sql_on: <font color = 'orange'><b>${input_data.ga_session_id}</b></font> = ${automl_predict.input_data_primary_key} ;;<br>  }<br>} |
 | Click `SAVE`| |
 
 
@@ -126,7 +128,7 @@ Just like we used the automl_tables explore as a building block for the use case
 
 #### <font size=5>4a. input_data.view </font><font color='red'> (REQUIRED)
 
-The input_data.view is where you define the data to use as input into the model. The Block's example input_data.view is a SQL derived table, so the use case refinement will update the derived_table syntax and all dimensions and measures to match the use case. We recommend using SQL Runner to test your query and generate the Derived Table syntax (see [SQL Runner](https://docs.looker.com/data-modeling/learning-lookml/sql-runner-create-dts) documentation for more information). The steps are below.
+The input_data.view is where you define the data to use as input into the model. The input data to AutoML Tables must be between 1,000 and 100 million rows, and less than 100 GB. The Block's example input_data.view is a SQL derived table, so the use case refinement will update the derived_table syntax and all dimensions and measures to match the use case. We recommend using SQL Runner to test your query and generate the Derived Table syntax (see [SQL Runner](https://docs.looker.com/data-modeling/learning-lookml/sql-runner-create-dts) documentation for more information). The steps are below.
 
 | steps | example |
 | -- | -- |
