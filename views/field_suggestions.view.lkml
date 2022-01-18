@@ -1,3 +1,8 @@
+# Pull the field names from the SQL select statement defined in INPUT_DATA view
+# in order to provide field suggestions for the select_features and select_target parameters
+
+# only fields in the derived table: SQL: parameter will be used (derived fields or measures are not included)
+
 view: field_suggestions {
   derived_table: {
     sql:  SELECT REGEXP_REPLACE(SPLIT(pair, ':')[OFFSET(0)], r'^"|"$', '') AS column_name

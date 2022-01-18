@@ -1,30 +1,33 @@
-view: automl_create_model {
-  label: "[5] AutoML: Create Model via SEND email (do not click RUN)"
+include: "/views/automl_create_model.view"
+
+view: census_income_predictions_automl_create_model {
+  extends: [automl_create_model]
+
   derived_table: {
     persist_for: "1 second"
 
     create_process: {
 
       sql_step: CREATE OR REPLACE TABLE @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_input_data_{{ _explore._name }}
-                    AS  SELECT * EXCEPT({% parameter automl_training_data.select_target %})
-                          , {% parameter automl_training_data.select_target %} AS input_label_col
-                        FROM ${input_data.SQL_TABLE_NAME}
+                    AS  SELECT * EXCEPT({% parameter census_income_predictions_automl_training_data.select_target %})
+                          , {% parameter census_income_predictions_automl_training_data.select_target %} AS input_label_col
+                        FROM ${census_income_predictions_input_data.SQL_TABLE_NAME}
       ;;
 
-      sql_step: CREATE OR REPLACE TABLE @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }}
+        sql_step: CREATE OR REPLACE TABLE @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }}
                     AS  SELECT
-                          {% parameter automl_training_data.select_target %} AS input_label_col,
-                          {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
+                          {% parameter census_income_predictions_automl_training_data.select_target %} AS input_label_col,
+                          {% assign features = _filters['census_income_predictions_automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                             {{ features }}
-                        FROM ${input_data.SQL_TABLE_NAME}
-                        WHERE {% parameter automl_training_data.select_target %} IS NOT NULL
+                        FROM ${census_income_predictions_input_data.SQL_TABLE_NAME}
+                        WHERE {% parameter census_income_predictions_automl_training_data.select_target %} IS NOT NULL
       ;;
 
-      sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }}
+          sql_step: CREATE OR REPLACE MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }}
                   OPTIONS(
-                    {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
+                    {% if census_income_predictions_automl_training_data.select_target_type._parameter_value == 'numerical' %}
                       MODEL_TYPE = 'AUTOML_REGRESSOR'
-                    {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
+                    {% elsif census_income_predictions_automl_training_data.select_target_type._parameter_value == 'categorical' %}
                       MODEL_TYPE = 'AUTOML_CLASSIFIER'
                     {% endif %}
                     , INPUT_LABEL_COLS = ['input_label_col']
@@ -34,7 +37,7 @@ view: automl_create_model {
                       FROM @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_training_data_{{ _explore._name }})
       ;;
 
-      sql_step: CREATE TABLE IF NOT EXISTS @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO
+            sql_step: CREATE TABLE IF NOT EXISTS @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO
                   (model_name   STRING,
                   target        STRING,
                   target_type   STRING,
@@ -44,11 +47,11 @@ view: automl_create_model {
                   explore       STRING)
     ;;
 
-      sql_step: MERGE @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO AS T
+              sql_step: MERGE @{looker_temp_dataset_name}.AUTOML_TABLES_MODEL_INFO AS T
                 USING (SELECT '{% parameter model_name.select_model_name %}' AS model_name,
-                      '{% parameter automl_training_data.select_target %}' AS target,
-                      '{% parameter automl_training_data.select_target_type %}' AS target_type,
-                      {% assign features = _filters['automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
+                      '{% parameter census_income_predictions_automl_training_data.select_target %}' AS target,
+                      '{% parameter census_income_predictions_automl_training_data.select_target_type %}' AS target_type,
+                      {% assign features = _filters['census_income_predictions_automl_training_data.select_features'] | sql_quote | remove: '"' | remove: "'" %}
                         '{{ features }}' AS features,
                       {% parameter automl_hyper_params.set_budget_hours %} AS budget_hours,
                       CURRENT_TIMESTAMP AS created_at,
@@ -66,9 +69,9 @@ view: automl_create_model {
                   VALUES(model_name, target, target_type, features, budget_hours, created_at, explore)
       ;;
 
-      sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate_{{ _explore._name }}
+                sql_step: CREATE OR REPLACE VIEW @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_evaluate_{{ _explore._name }}
                     AS
-                    {% if automl_training_data.select_target_type._parameter_value == 'numerical' %}
+                    {% if census_income_predictions_automl_training_data.select_target_type._parameter_value == 'numerical' %}
                        SELECT mean_absolute_error
                           , mean_squared_error
                           , mean_squared_log_error
@@ -82,7 +85,7 @@ view: automl_create_model {
                           , NULL AS log_loss
                           , NULL AS roc_auc
                         FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }})
-                    {% elsif automl_training_data.select_target_type._parameter_value == 'categorical' %}
+                    {% elsif census_income_predictions_automl_training_data.select_target_type._parameter_value == 'categorical' %}
                         SELECT NULL AS mean_absolute_error
                           , NULL AS mean_squared_error
                           , NULL AS mean_squared_log_error
@@ -98,13 +101,8 @@ view: automl_create_model {
                         FROM ML.EVALUATE(MODEL @{looker_temp_dataset_name}.{% parameter model_name.select_model_name %}_automl_model_{{ _explore._name }})
                     {% endif %}
       ;;
-    }
-  }
+              }
+            }
 
-  dimension: train_model {
-    label: "Train Model (REQUIRED) IMPORTANT: READ DESCRIPTION"
-    description: "Select this field and SEND the query to yourself via Email to start training your model. Do not attempt to Run a query in the browser with this field selected. If you do, your query will timeout before the AutoML model is created."
-    type: string
-    sql: 'Complete' ;;
-  }
-}
+
+          }
