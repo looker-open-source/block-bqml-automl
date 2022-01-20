@@ -15,7 +15,7 @@ To integrate Looker with BigQuery ML and AutoML Tables start with your problem: 
 
 This Block gives business users the ability to make predictions (categorical or numerical) from a new or existing Explore. Explores created with this Block can be used to create classification and regression models, evaluate them, and access their predictions in dashboards or custom analyses.
 
-Models created AutoML Tables can take hours to run; therefore, users should set up the required parameters for defining the model (name, target, features, etc...) and then use SEND (rather than RUN) to create the model asynchronously. When model is complete, user will receive an email and can return to the explore to review the results.
+Models created by AutoML Tables can take hours to run; therefore, users should set up the required parameters for defining the model (name, target, features, etc...) and then use SEND (rather than RUN) to create the model asynchronously. When the model is complete, the user will receive an email and can return to the explore to review the results.
 
 ---
 > <b><font size = "3" color="#174EA6"> <i class='fa fa-info-circle'></i>  Reach out to your Looker account team if you would like to partner with Looker Professional Services to implement this Looker + BQML block or customize for your specific use case</font></b>
@@ -49,7 +49,7 @@ During installation you will be asked for the connection and dataset name. These
 2. Review **license agreement** and click `Accept`
 3. Review **required Looker permissions** and click `Accept`<br>_note these permissions allow Marketplace to install the Block and are not related to user or developer permissions on your instance_
 4. Specify **configuration details**
-    - Select **Connection Name** from dropdown. This value will be saved to the Block's marketplace_lock file for the constant named `CONNECTION_NAME` and referenced throughout the Block.
+    - Select **Connection Name** from the dropdown. This value will be saved to the Block's marketplace_lock file for the constant named `CONNECTION_NAME` and referenced throughout the Block.
     - Enter **name of dataset for storing Model details and related tables**. This value can be the same dataset used for Looker PDTs as defined in the selected connection. This value will be saved to the Block's marketplace_lock file for the constant `looker_temp_dataset_name` and referenced throughout the Block.
 
 Upon successful completion of the installation, a green Check Mark and bar will appear. These new objects are installed:
@@ -76,15 +76,21 @@ The installed Block provides a workflow template as part of an Explore to guide 
 > [7] AutoML: Predictions<br>
 > [8] AutoML: Feature Info</b>
 
-For each use case, a LookML developer will create an Explore incorporating the workflow template but changing the Input Data to match a specific use case. For example, your use case may be a classification model to predict a customer’s likelihood to purchase a new product. You would add a new model and explore to the `marketplace_bqml-automl project` extending the AutoML explore that defines the overall workflow and modifying the input data to capture the desired target and feature data (i.e., the data needed to train the model).
+For each use case, a LookML developer will create an Explore incorporating the workflow template by changing the Input Data to match a specific use case. For example, your use case may be a classification model to predict a customer’s likelihood to purchase a new product. You would add a new model and explore to the `marketplace_bqml-automl project` extending the AutoML explore that defines the overall workflow and modifying the input data to capture the desired target and feature data (i.e., the data needed to train the model).
 
 At a high-level the steps for each use case are:
 ><b>1)  Create Folder for all Use Case files<br>
 >2)  Add New Model <br>
->3)  Add New Explore which Extends the Block's AutoML Explore <br>
->4)  Make Refinements of select Explores and Views <br></b>
+>3)  Make Refinements of select Explores and Views <br>
+>4)  Add New Explore which Extends the Block's AutoML Explore <br></b>
 
 Details and code examples for each step are provided next. Note, all steps take place in `marketplace_bqml-automl` project while in **development mode**.
+
+---
+ <font size = "3"><font color="red"><i class='fa fa-exclamation-triangle'></i><b> note:  If copying/pasting example LookML from this document, ensure quotation marks are straight quotes (") </b></font></font><br>When pasting from this document, quotations may appear as curly or smart quotes (“). If necessary, re-type quotes in the LookML IDE to change to straight quotes.
+
+---
+
 
 ### 1. Create Folder for all Use Case files (one folder per use case)
 When you open the `marketplace_bqml-automl` project while in development mode and review the `File Browser` pane, you will see the project contains a folder called `imported_projects`. Expanding this folder you will see a subfolder named `bqml-automl`. This folder contains all the models, explores and views for the Block. These files are read-only; however, we will be including these files in the use case model and refining/extending a select few files to support the use case. You should keep all files related to the use case in a single folder. Doing so will allow easy editing of a use case. Within the project, you should create a separate folder for each use case.
@@ -112,21 +118,12 @@ Add a new model file for the use case, update the connection, and add include st
 | Add an include statement for the Block's `automl_tables.explore` so the file is available to this use case model and can be extended into the new Explore created in the next step.| include: "//bqml-automl/**/automl_tables.explore" |
 | Click `SAVE` | |
 
-### 3. Add New Explore which Extends the Block's AutoML Tables Explore
-As noted earlier, all the files related to this Block are found in the `imported_projects\bqml-automl` directory. The Explore file `automl_tables.explore` specifies all the views and join relationships to generate the stepped workflow the user will navigate through to create and evaluate classification and/or regression models using AutoML. For each use case, you will use the `automl_tables` Explore as a starting point by extending it into a new Explore. The new Explore will build upon the content and settings from the original Explore and modify some of the components to fit the use case. See the [extends for Explores](https://docs.looker.com/reference/explore-params/extends) documentation page for more information on extends. In the previous step, we added the `include: "//bqml-automl/**/automl_tables.explore"` statement to the model file so that we could use this Explore for the use case. Below are the steps for adding a new Explore to the use case model file.
 
-| steps | example                |
-| -- | -- |
-| Open the Use Case Model file | ga_repeat_visitor.model |
-| Add Explore LookML which <br> a. includes label, group_label and/or description relevant to your use case<br>b. extends the automl_tables explore<br>c. updates the join parameter between `automl_predict` and `input_data` to reflect correct unit<br> <br>The AutoML model output generates a forecast for the target variable modeled and is named __input_data_primary_key__. <br>The target variable modeled could vary by use case (e.g., visitor, customer, machine), so need to update the Explore to capture the correct unit defined in the use case's `input_data` file (note steps for generating this file are detailed in the next section).<br><br>In the example, edit the terms in <b><font color='orange'>bold</font></b> to fit your use case.<br> <br>Note, you may receive a warning that the field you entered in the JOIN for input_data does not exist. This warning can be ignored for now as the input_data.view will be created in the next step.|explore: <font color='orange'><b>ga_repeat_visitor</b></font> {<br>  label: <font color='orange'><b>"AutoML: Google Analytics Repeat Visitor"</b></font><br>  description: <font color='orange'><b>"Use this Explore to create Classification or Regression models to make categorical or numerical predictions for Google Analytics data"</b></font><br><br>  extends: [automl_tables] <br><br>   join: automl_predict {<br>    type:full_outer<br>    relationship: one_to_one<br>    sql_on: <font color = 'orange'><b>${input_data.ga_session_id}</b></font> = ${automl_predict.input_data_primary_key} ;;<br>  }<br>} |
-| Click `SAVE`| |
-
-
-### 4. Make Refinements of select Explores and Views from the Block
+### 3. Make Refinements of select Explores and Views from the Block
 Just like we used the automl_tables explore as a building block for the use case explore, we will adapt the Block's `input_data.view`, `model_name_suggestions.explore` and `automl_predict.view` for the use case using LookML refinements syntax. To create a refinement you add a plus sign (+) in front of the name to indicate that it's a refinement of an existing view. All the parameters of the existing view will be used and select parameters can be modified (i.e., overwrite the original value). For detailed explanation of refinements, refer to the [LookML refinements](https://docs.looker.com/data-modeling/learning-lookml/refinements) documentation page. Within the use case folder, add a new `input_data.view`, a new `model_name_suggestions.explore` and optionally add a new `automl_predict.view`. Keep reading for detailed steps for each refinement file.
 
 
-#### <font size=5>4a. input_data.view </font><font color='red'> (REQUIRED)
+#### <font size=5>3a. input_data.view </font><font color='red'> (REQUIRED)
 
 The input_data.view is where you define the data to use as input into the model. The input data to AutoML Tables must be between 1,000 and 100 million rows, and less than 100 GB. The Block's example input_data.view is a SQL derived table, so the use case refinement will update the derived_table syntax and all dimensions and measures to match the use case. We recommend using SQL Runner to test your query and generate the Derived Table syntax (see [SQL Runner](https://docs.looker.com/data-modeling/learning-lookml/sql-runner-create-dts) documentation for more information). The steps are below.
 
@@ -140,14 +137,14 @@ The input_data.view is where you define the data to use as input into the model.
 | Navigate to SQL Runner by clicking on the `Develop` Menu and selecting `SQL Runner` | |
 | In left pane, change `Connection` to match the connection defined during installation of this Block (see project's marketplace_lock file and value for `@{CONNECTION_NAME}`)  | @CONNECTION_NAME = thelook_bq |
 | Write and test your SQL query to produce the desired dataset. At minimum, the query must return a target field (outcome we are trying to predict) and one feature (fields used to make the prediction). The provided example creates a simple dataset with ga_session_id, ga_repeat_visitor, is_mobile,total_timeonsite, total_pageviews. | SELECT<br>ga_session_id<br>,CASE WHEN ga_sessions.visitnumber > 1  THEN 'Yes' ELSE 'No' END as ga_repeat_visitor<br>, is_mobiledevice<br>,sum(pageviews) as total_pageviews<br>, sum(timeonsite) as total_timeonsite<br>FROM ga_sessions<br>group by 1,2,3|
-| Once the results are as expected, click the `gear` menu (next to Run button) and select `Get Derived Table LookML`. | |
+| Once the results are as expected, click the `gear` menu (next to the Run button) and select `Get Derived Table LookML`. | |
 | Copy the generated LookML (all lines) | |
 | Navigate back to `input_data.view` in your Use Case Folder | |
 | Delete all the notes in the file which were auto-generated when you created the file | |
 | Paste the contents from SQL Runner into the file | |
 | On line 1 of the file insert include statement for the Block view to be refined | include: "//bqml-automl/views/input_data.view" |
 | Replace `view: sql_runner_query` with `view: +input_data` <br> <br>The plus sign (+) indicates we are modifying/refining the original input_data view defined for the Block | view: +input_data |
-| Review the remaining LookML and edit as necessary with:<br>a. names, labels, group labels, descriptions<br>b. identify primary key field<br>c. Modify date formats as necessary. For example, dates are automatically defined as a `dimension_group with type of time` so modify as necessary for timeframes or convert to a single date dimension.<d> Add any additional measures if needed (only count created by default) | dimension: ga_session_id {<br>  type: string<br>  primary_key: yes<br>  sql: <br>${TABLE}.ga_session_id ;;<br>} |
+| Review the remaining LookML and edit as necessary with:<br>a. names, labels, group labels, descriptions<br>b. identify the primary key field<br>c. Modify date formats as necessary. For example, dates are automatically defined as a `dimension_group with type of time` so modify as necessary for timeframes or convert to a single date dimension.<d> Add any additional measures if needed (only count created by default) | dimension: ga_session_id {<br>  type: string<br>  primary_key: yes<br>  sql: <br>${TABLE}.ga_session_id ;;<br>} |
 | Click `SAVE` | |
 
 ---
@@ -155,9 +152,8 @@ The input_data.view is where you define the data to use as input into the model.
 
 ---
 
-
-#### <font size=5>4b. model_name_suggestions.explore </font><font color='red'> (REQUIRED)
-To create an AutoML model, the user must enter a name for the model and can type in any string value. The AutoML Explore also allows the user to evaluate a model which has already been created. The `Model Name` parameter allows users to select the name from a list of existing models created by the given Explore. These suggested values come from the `AUTOML_TABLES_MODEL_INFO` table stored in the Model Details dataset defined for the Block during installation. Because this table captures details for all models created with the Block across all Explores, we need to filter the suggestions by Explore name–the Explore created in `Implementation Step 3`. If you do not filter for the use case Explore, an error would occur if the user tries to evaluate a model based on different input data.
+#### <font size=5>3b. model_name_suggestions.explore </font><font color='red'> (REQUIRED)
+To create an AutoML model, the user must enter a name for the model and can type in any string value. The AutoML Explore also allows the user to evaluate a model which has already been created. The `Model Name` parameter allows users to select the name from a list of existing models created by the given Explore. These suggested values come from the `AUTOML_TABLES_MODEL_INFO` table stored in the Model Details dataset defined for the Block during installation. Because this table captures details for all models created with the Block across all Explores, we need to filter the suggestions by Explore name–the Explore which will be created in `Implementation Step 4`. If you do not filter for the use case Explore, an error would occur if the user tries to evaluate a model based on different input data.
 
 The name suggestions come from the `model_name_suggestions.explore` and in this step we will refine the `sql_always_where` filter applied to the include the use case Explore name.
 
@@ -172,7 +168,7 @@ The name suggestions come from the `model_name_suggestions.explore` and in this 
 | On the next lines, enter<br> a. the explore name using the + refinement syntax<br> b. update sql_always_where syntax with use case explore name (as shown in <font color = 'orange'>bold</font> in the example) | explore: +model_name_suggestions {<br>  sql_always_where: ${model_info.explore} =<font color='orange'><b>'ga_repeat_visitor'</b></font>;;<br>} |
 
 
-#### <font size=5>4c. automl_predict.view </font><font color='red'> (REQUIRED)
+#### <font size=5>3c. automl_predict.view </font><font color='red'> (REQUIRED)
 Because AutoML allows for the generation of both classification and regression models, the predicted or target variable could represent a variety of things (customer, machine, website session, etc…). To accommodate this variety, the Block uses a generic field name in the prediction output file: `input_data_primary_key`. With the refinement of the automl_predict.view, you can specify the the *label:* and *sql:* parameters for the `input_data_primary_key` dimension. The *label:* and *sql:* parameters should match the primary key column from `input_data.view`. Note the label could be changed to reflect a more meaningful label the user will recognize.
 
 | steps | example |
@@ -187,6 +183,37 @@ Because AutoML allows for the generation of both classification and regression m
 | On next lines, add dimension: input_data_primary_key and update the *label:* and *sql:* parameters accordingly:| dimension: input_data_primary_key {<br>    <font color='orange'><b>label: "GA Session ID"<br>    sql: ${TABLE}.ga_session_id;; </b></font><br>} |
 | Click `SAVE`| |
 
+
+### 4. Add New Explore which Extends the Block's AutoML Tables Explore
+As noted earlier, all the files related to this Block are found in the `imported_projects\bqml-automl` directory. The Explore file `automl_tables.explore` specifies all the views and join relationships to generate the stepped workflow the user will navigate through to create and evaluate classification and/or regression models using AutoML. For each use case, you will use the `automl_tables` Explore as a starting point by extending it into a new Explore. The new Explore will build upon the content and settings from the original Explore and modify some of the components to fit the use case. See the [extends for Explores](https://docs.looker.com/reference/explore-params/extends) documentation page for more information on extends. In the previous step, we added the `include: "//bqml-automl/**/automl_tables.explore"` statement to the model file so that we could use this Explore for the use case. Below are the steps for adding a new Explore to the use case model file.
+
+| steps | example                |
+| -- | -- |
+| Open the Use Case Model file | ga_repeat_visitor.model |
+| Add Explore LookML which <br> a. includes label, group_label and/or description relevant to your use case<br>b. extends the automl_tables explore<br>c. updates the join parameter between `automl_predict` and `input_data` to reflect correct unit<br> <br>The AutoML model output generates a forecast for the target variable modeled and is named __input_data_primary_key__. <br>The target variable modeled could vary by use case (e.g., visitor, customer, machine), so need to update the Explore to capture the correct unit defined in the use case's `input_data` view file (as defined in the previous step).<br><br>In the example, edit the terms in <b><font color='orange'>bold</font></b> to fit your use case.<br> |explore: <font color='orange'><b>ga_repeat_visitor</b></font> {<br>  label: <font color='orange'><b>"AutoML: Google Analytics Repeat Visitor"</b></font><br>  description: <font color='orange'><b>"Use this Explore to create Classification or Regression models to make categorical or numerical predictions for Google Analytics data"</b></font><br><br>  extends: [automl_tables] <br><br>   join: automl_predict {<br>    type:full_outer<br>    relationship: one_to_one<br>    sql_on: <font color = 'orange'><b>${input_data.ga_session_id}</b></font> = ${automl_predict.input_data_primary_key} ;;<br>  }<br>} |
+| Click `SAVE`| |
+
+
+---
+   <font size = "3"><font color="red"><i class='fa fa-exclamation-triangle'></i><b> note: When creating the AutoML model asynchronously, use production mode </b></font></font> As noted earlier, due to the lengthy processing times common with AutoML Tables, users should set the model parameters and SEND the model creation query as rather than choosing RUN. Explores can be sent as one-time deliveries only and reflect the production mode of LookML (not development mode). Therefore, when testing LookML changes for this project you should commit and push to production and exit development mode.
+
+---
+
+
+## AutoML Tables CREATE MODEL Syntax
+
+With this block, the user will be able to control these options for the AutoML Tables Model:
+
+| options | description | default |
+| -- | -- | -- |
+| model_name | name of the BigQuery ML model that you're creating or replacing |
+| model_type | Specifies the model type. If the user sets the parameter `select_target_type` to numerical then model_type = AUTOML_REGRESSOR. If parameter set to categorical then model_type = AUTOML_CLASSIFIER  |
+| input_label_cols | The label column name in the training data as specified by user with the parameter `select target` |
+| budget_hours | Sets the training budget for AutoML Tables training, specified in hours. Defaults to 1.0 and must be between 1.0 and 72.0. | 1 |
+
+Note the parameter `select features` allows the user to identify the columns to be used to predict the target and defines the model's training data. For more information about the options for the AutoML Tables Model, see the [Create Model Syntax documentation](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-automl#create_model_syntax).
+
+Note, this block could be customized to include additional options and parameters.
 
 
 ## Enabling Business Users
