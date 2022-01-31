@@ -23,6 +23,12 @@ view: census_income_predictions_input_data {
                   , functional_weight
                   , education
                   , education_num
+                  , case when education_num = 9 then 'High School Grad'
+                         when education_num = 10 then 'Some College'
+                         when education_num between 11 and 12 then 'Associate Degree'
+                         when education_num = 13 then 'Bachelors Degree'
+                         when education_num >=14 then 'Masters or higher'
+                         when education_num < 9 then 'Other' end as education_group
                   , marital_status
                   , occupation
                   , relationship
@@ -35,7 +41,7 @@ view: census_income_predictions_input_data {
                   , income_bracket
                   , COUNT(*) as row_count
               FROM `bigquery-public-data.ml_datasets.census_adult_income`
-              GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+              GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 16
               HAVING row_count = 1
               )
   ;;
@@ -70,6 +76,11 @@ view: census_income_predictions_input_data {
   dimension: education_num {
     type: number
     sql: ${TABLE}.education_num ;;
+  }
+
+  dimension: education_group {
+    type: string
+    sql: ${TABLE}.education_group ;;
   }
 
   dimension: marital_status {
