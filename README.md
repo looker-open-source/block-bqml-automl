@@ -15,7 +15,7 @@ To integrate Looker with BigQuery ML and AutoML Tables start with your problem: 
 
 This Block gives business users the ability to make predictions (categorical or numerical) from a new or existing Explore. Explores created with this Block can be used to create classification and regression models, evaluate them, and access their predictions in dashboards or custom analyses.
 
-Models created by AutoML Tables can take hours to run; therefore, users should set up the required parameters for defining the model (name, target, features, etc...) and then use SEND (rather than RUN) to create the model asynchronously. When the model is complete, the user will receive an email and can return to the explore to review the results.
+Models created by AutoML Tables can take hours to run; therefore, users should set up the required parameters for defining the model (name, target, features, etc...) and then use SEND (rather than RUN) to create the model asynchronously via Looker Scheduler. When the model is complete, the user will receive an email and can return to the explore to review the results. Note any user of these AutoML explores will need `schedule_look_emails` permission (see [Content Delivery Permissions](https://docs.looker.com/sharing-and-publishing/scheduling-and-sharing/scheduling-for-admins)).
 
 ---
 > <b><font size = "3" color="#174EA6"> <i class='fa fa-info-circle'></i>  Reach out to your Looker account team if you would like to partner with Looker Professional Services to implement this Looker + BQML block or customize for your specific use case</font></b>
@@ -69,10 +69,13 @@ At this point you can begin creating your own Explores incorporating the AutoML 
 
 ## Building an Explore with the AutoML Block
 
-The installed Block provides a workflow template as part of an Explore to guide a business user through the steps necessary to create and evaluate AutoML models. As seen in the provided Explore `AutoML Tables: Census Income Predictions`, a user navigates through a series of steps to create and evaluate classification or regression models. A few examples of the workflow steps are:
+The installed Block provides a workflow template as part of an Explore to guide a business user through the steps necessary to create and evaluate AutoML models. As seen in the provided Explore `AutoML Tables: Census Income Predictions`, a user navigates through a series of steps to create and evaluate classification or regression models. These are the workflow steps for an AutoML model:
 > <b>[1] AutoML: Input Data<br>
 > [2] AutoML: Name Your Model<br>
 > [3] AutoML: Select Training Data<br>
+> [4] AutoML: Set Model Parameters<br>
+> [5] AutoML: Create Model via SEND email<br>
+> [6] AutoML: Evaluation Metrics<br>
 > [7] AutoML: Predictions<br>
 > [8] AutoML: Feature Info</b>
 
@@ -120,7 +123,7 @@ Add a new model file for the use case, update the connection, and add include st
 
 
 ### 3. Make Refinements of select Explores and Views from the Block
-Just like we used the automl_tables explore as a building block for the use case explore, we will adapt the Block's `input_data.view`, `model_name_suggestions.explore` and `automl_predict.view` for the use case using LookML refinements syntax. To create a refinement you add a plus sign (+) in front of the name to indicate that it's a refinement of an existing view. All the parameters of the existing view will be used and select parameters can be modified (i.e., overwrite the original value). For detailed explanation of refinements, refer to the [LookML refinements](https://docs.looker.com/data-modeling/learning-lookml/refinements) documentation page. Within the use case folder, add a new `input_data.view`, a new `model_name_suggestions.explore` and optionally add a new `automl_predict.view`. Keep reading for detailed steps for each refinement file.
+Just like we used the automl_tables explore as a building block for the use case explore, we will adapt the Block's `input_data.view`, `model_name_suggestions.explore` and `automl_predict.view` for the use case using LookML refinements syntax. To create a refinement you add a plus sign (+) in front of the name to indicate that it's a refinement of an existing view. All the parameters of the existing view will be used and select parameters can be modified (i.e., overwrite the original value). For detailed explanation of refinements, refer to the [LookML refinements](https://docs.looker.com/data-modeling/learning-lookml/refinements) documentation page. Within the use case folder, add a new `input_data.view`, a new `model_name_suggestions.explore` and a new `automl_predict.view`. Keep reading for detailed steps for each refinement file.
 
 
 #### <font size=5>3a. input_data.view </font><font color='red'> (REQUIRED)
@@ -169,7 +172,7 @@ The name suggestions come from the `model_name_suggestions.explore` and in this 
 
 
 #### <font size=5>3c. automl_predict.view </font><font color='red'> (REQUIRED)
-Because AutoML allows for the generation of both classification and regression models, the predicted or target variable could represent a variety of things (customer, machine, website session, etc…). To accommodate this variety, the Block uses a generic field name in the prediction output file: `input_data_primary_key`. With the refinement of the automl_predict.view, you can specify the the *label:* and *sql:* parameters for the `input_data_primary_key` dimension. The *label:* and *sql:* parameters should match the primary key column from `input_data.view`. Note the label could be changed to reflect a more meaningful label the user will recognize.
+When generating the prediction for the input dataset, the resulting output includes the primary key of the dataset. For example, you may be generating a prediction for a customer or a session or other types of observations. Because the field name in the prediction output file can take on any value, a generic name is used instead. `input_data_primary_key`. To handle this you need to create a refinement of the automl_predict.view and specify the the *label:* and *sql:* parameters for the `input_data_primary_key` dimension. The *label:* and *sql:* parameters should match the primary key column from `input_data.view`. Note the label could be changed to reflect a more meaningful label the user will recognize.
 
 | steps | example |
 | -- | -- |
@@ -195,7 +198,7 @@ As noted earlier, all the files related to this Block are found in the `imported
 
 
 ---
-   <font size = "3"><font color="red"><i class='fa fa-exclamation-triangle'></i><b> note: When creating the AutoML model asynchronously, use production mode </b></font></font> As noted earlier, due to the lengthy processing times common with AutoML Tables, users should set the model parameters and SEND the model creation query as rather than choosing RUN. Explores can be sent as one-time deliveries only and reflect the production mode of LookML (not development mode). Therefore, when testing LookML changes for this project you should commit and push to production and exit development mode.
+   <font size = "3"><font color="red"><i class='fa fa-exclamation-triangle'></i><b> note: When creating the AutoML model asynchronously, use production mode </b></font></font> As noted earlier, due to the lengthy processing times common with AutoML Tables, users should set the model parameters and SEND the model creation query via Looker Scheduler rather than choosing RUN. Explores can be sent as one-time deliveries only and reflect the production mode of LookML (not development mode). Therefore, when testing LookML changes for this project you should commit and push to production and exit development mode.
 
 ---
 
@@ -211,14 +214,18 @@ With this block, the user will be able to control these options for the AutoML T
 | input_label_cols | The label column name in the training data as specified by user with the parameter `select target` |
 | budget_hours | Sets the training budget for AutoML Tables training, specified in hours. Defaults to 1.0 and must be between 1.0 and 72.0. | 1 |
 
-Note the parameter `select features` allows the user to identify the columns to be used to predict the target and defines the model's training data. For more information about the options for the AutoML Tables Model, see the [Create Model Syntax documentation](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-automl#create_model_syntax).
+Note the parameter `select features` allows the user to identify the columns to be used to predict the target and defines the model's training data. For more information about the options for the AutoML Tables Model like optimization objective or data split column, see the [Create Model Syntax documentation](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-automl#create_model_syntax).
 
-Note, this block could be customized to include additional options and parameters.
+# Customizations
+>
+> <b><font size = "3" color="#174EA6"> <i class='fa fa-info-circle'></i> Note, AutoML Explores can be customized to include other model types, options and parameters. </font></b> If you would like to use a different machine learning model type or include other model parameters like modeling optimization objective, training/validation sets, or target probability thresholds, contact your Looker account team for guidance.
+>
+
 
 
 ## Enabling Business Users
 
-This block comes with the following example Explore for enabling business users.
+This block comes with a [Quick Start Guide for Business Users](https://github.com/looker/block-bqml-automl/blob/master/QUICK_START_GUIDE.md) and the following example Explore for enabling business users.
 - AutoML Tables: Census Income Prediction
 
 
