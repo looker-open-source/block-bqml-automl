@@ -4,6 +4,7 @@ include: "/views/*.view"
 
 explore: census_income_predictions {
   view_name: model_name
+  group_label: "Looker + BigQuery ML"
   label: "AutoML Tables: Census Income Predictions"
   description: "Use this Explore to create regression and classification models for advanced analytics using U.S. Census income data"
 
